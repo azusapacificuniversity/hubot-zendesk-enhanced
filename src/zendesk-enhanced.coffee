@@ -331,19 +331,19 @@ module.exports = (robot) ->
       zendesk_request msg, "search.json?query=status:#{query}+type:ticket#{default_group}", (results) ->
         message = "#{zdicon}There are currently #{results.count} #{query} tickets:"
         for result in results.results
-          message += "\n#{zdicon}Ticket #{result.id} #{result.subject} (#{result.status.toUpperCase()})[#{result.priority}]: #{tickets_url}/#{result.id}"
+          message += "\n<#{tickets_url}/#{result.id}|##{result.id} - #{result.subject}> (#{result.status.toUpperCase()})[#{result.priority}]"
         msg.send message
     else if /all/i.test(query) is true
       zendesk_request msg, unsolved_query + default_group, (results) ->
         message = "#{zdicon}There are currently #{results.count} unsolved tickets:"
         for result in results.results
-          message += "\n#{zdicon}Ticket #{result.id} #{result.subject} (#{result.status.toUpperCase()})[#{result.priority}]: #{tickets_url}/#{result.id}"
+          message += "\n<#{tickets_url}/#{result.id}|##{result.id} - #{result.subject}> (#{result.status.toUpperCase()})[#{result.priority}]"
         msg.send message
     else
       zendesk_request msg, unsolved_query + "+tags:#{query}" + default_group, (results) ->
         message = "#{zdicon}There are currently #{results.count} unsolved #{query} tagged tickets:"
         for result in results.results
-          message += "\n#{zdicon}Ticket #{result.id} #{result.subject} (#{result.status.toUpperCase()})[#{result.priority}]: #{tickets_url}/#{result.id}"
+          message += "\n<#{tickets_url}/#{result.id}|##{result.id} - #{result.subject}> (#{result.status.toUpperCase()})[#{result.priority}]"
         msg.send message
 
   # List tickets of query in a group
@@ -354,19 +354,19 @@ module.exports = (robot) ->
       zendesk_request msg, "search.json?query=status:#{query}+type:ticket+group:#{group}", (results) ->
         message = "#{zdicon}There are currently #{results.count} #{query} tickets in #{group}:"
         for result in results.results
-          message += "\n#{zdicon}Ticket #{result.id} #{result.subject} (#{result.status.toUpperCase()})[#{result.priority}]: #{tickets_url}/#{result.id}"
+          message += "\n<#{tickets_url}/#{result.id}|##{result.id} - #{result.subject}> (#{result.status.toUpperCase()})[#{result.priority}]"
         msg.send message
     else if /all/i.test(query) is true
       zendesk_request msg, unsolved_query + "+group:#{group}", (results) ->
         message = "#{zdicon}There are currently #{results.count} unsolved tickets in #{group}:"
         for result in results.results
-          message += "\n#{zdicon}Ticket #{result.id} #{result.subject} (#{result.status.toUpperCase()})[#{result.priority}]: #{tickets_url}/#{result.id}"
+          message += "\n<#{tickets_url}/#{result.id}|##{result.id} - #{result.subject}> (#{result.status.toUpperCase()})[#{result.priority}]"
         msg.send message
     else
       zendesk_request msg, unsolved_query + "+tags:#{query}" + "+group:#{group}", (results) ->
         message = "#{zdicon}There are currently #{results.count} unsolved #{query} tagged tickets in #{group}:"
         for result in results.results
-          message += "\n#{zdicon}Ticket #{result.id} #{result.subject} (#{result.status.toUpperCase()})[#{result.priority}]: #{tickets_url}/#{result.id}"
+          message += "\n<#{tickets_url}/#{result.id}|##{result.id} - #{result.subject}> (#{result.status.toUpperCase()})[#{result.priority}]"
         msg.send message
 
   # Print info of a ticket
@@ -376,8 +376,7 @@ module.exports = (robot) ->
       if result.error
         msg.send result.description
         return
-      message = "#{zdicon}#{tickets_url}/#{result.ticket.id}"
-      message += "\n>##{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})"
+      message = "#{zdicon}<#{tickets_url}/#{result.ticket.id}|##{result.ticket.id} #{result.ticket.subject}> (#{result.ticket.status.toUpperCase()})"
       message += "\n>Priority: #{result.ticket.priority}"
       message += "\n>Type: #{result.ticket.type}"
       message += "\n>Updated: #{result.ticket.updated_at}"
@@ -450,6 +449,5 @@ module.exports = (robot) ->
           if result.error
             msg.send "Zendesk error: #{result.error}"
             return
-          message = "\n#{zdicon}Ticket #{result.ticket.id} #{result.ticket.subject} (#{result.ticket.status.toUpperCase()})[#{result.ticket.priority}]"
-          message += "\n>#{tickets_url}/#{result.ticket.id}"
+          message = "\n#{zdicon}<#{tickets_url}/#{result.ticket.id}|##{result.ticket.id} - #{result.ticket.subject}> (#{result.ticket.status.toUpperCase()})[#{result.ticket.priority}]"
           msg.send message
